@@ -156,23 +156,8 @@ function myFunction() {
 }
 
 function dither(b1){
-
-	start  = readBytesToInt(b1,20,4)*2
-	width  = readBytesToInt(b1,36,4)
-	height = readBytesToInt(b1,44,4)
-	rowLength = Math.ceil(24*width/32)*4*2
-
-	var pixels = [];
-	pixels[0] = blankpixelmap(0,width,height);
-	sum = 0
-	for(dd=0;dd<height;dd++){
-	for(dc=0;dc<width;dc++){
-		pixels[0][dc][dd] = [	readBytesToInt(b1,start+dd*rowLength+dc*6+4,1)*159/256+25, 
-								readBytesToInt(b1,start+dd*rowLength+dc*6+2,1)*159/256+20, 
-								readBytesToInt(b1,start+dd*rowLength+dc*6+0,1)*163/256+15]
-	}}
-
-	pallette = [
+	
+	pallette = [//on void
 		[	'wooden-chest'	,[		154	,	118	,	58	],	'aa'	],
 		[	'iron-chest'	,[		133	,	115	,	99	],	'ab'	],
 		[	'steel-chest'	,[		135	,	120	,	123	],	'ac'	],
@@ -374,39 +359,287 @@ function dither(b1){
 		[	'artillery-targeting-remote'	,[		123	,	66	,	52	],	'hq'	],
 		[	'radar'	,[		121	,	114	,	92	],	'hr'	]
 	]
+	
 
-	pixels[1] = blankpixelmap("",width,height);
+	/*pallette = [// on refined concrete
+		[	'wooden-chest'	,[		155	,	119	,	59	],	'aa'	],
+		[	'iron-chest'	,[		133	,	115	,	99	],	'ab'	],
+		[	'steel-chest'	,[		136	,	121	,	125	],	'ac'	],
+		[	'storage-tank'	,[		130	,	116	,	93	],	'ad'	],
+		[	'transport-belt'	,[		133	,	115	,	90	],	'ae'	],
+		[	'fast-transport-belt'	,[		134	,	95	,	90	],	'af'	],
+		[	'express-transport-belt'	,[		97	,	121	,	124	],	'ag'	],
+		[	'underground-belt'	,[		118	,	100	,	69	],	'ah'	],
+		[	'fast-underground-belt'	,[		116	,	68	,	63	],	'aI'	],
+		[	'express-underground-belt'	,[		84	,	99	,	107	],	'aj'	],
+		[	'splitter'	,[		102	,	93	,	72	],	'ak'	],
+		[	'fast-splitter'	,[		111	,	85	,	82	],	'al'	],
+		[	'express-splitter'	,[		95	,	105	,	108	],	'am'	],
+		[	'burner-inserter'	,[		100	,	99	,	98	],	'an'	],
+		[	'inserter'	,[		144	,	119	,	74	],	'ao'	],
+		[	'long-handed-inserter'	,[		138	,	87	,	80	],	'ap'	],
+		[	'fast-inserter'	,[		80	,	124	,	136	],	'aq'	],
+		[	'filter-inserter'	,[		119	,	95	,	136	],	'ar'	],
+		[	'stack-inserter'	,[		116	,	134	,	80	],	'as'	],
+		[	'stack-filter-inserter'	,[		131	,	130	,	129	],	'at'	],
+		[	'small-electric-pole'	,[		90	,	84	,	75	],	'au'	],
+		[	'medium-electric-pole'	,[		98	,	87	,	76	],	'av'	],
+		[	'big-electric-pole'	,[		98	,	102	,	103	],	'aw'	],
+		[	'substation'	,[		88	,	90	,	92	],	'ax'	],
+		[	'pipe'	,[		98	,	90	,	70	],	'ay'	],
+		[	'pipe-to-ground'	,[		118	,	105	,	79	],	'az'	],
+		[	'pump'	,[		87	,	75	,	64	],	'ba'	],
+		[	'rail'	,[		125	,	114	,	90	],	'bb'	],
+		[	'train-stop'	,[		126	,	82	,	69	],	'bc'	],
+		[	'rail-signal'	,[		91	,	89	,	60	],	'bd'	],
+		[	'rail-chain-signal'	,[		80	,	97	,	102	],	'be'	],
+		[	'locomotive'	,[		140	,	84	,	78	],	'bf'	],
+		[	'cargo-wagon'	,[		95	,	92	,	91	],	'bg'	],
+		[	'fluid-wagon'	,[		110	,	107	,	105	],	'bh'	],
+		[	'artillery-wagon'	,[		104	,	99	,	76	],	'bI'	],
+		[	'car'	,[		94	,	73	,	49	],	'bj'	],
+		[	'tank'	,[		104	,	78	,	47	],	'bk'	],
+		[	'spidertron'	,[		115	,	79	,	49	],	'bl'	],
+		[	'spidertron-remote'	,[		89	,	74	,	69	],	'bm'	],
+		[	'logistic-robot'	,[		100	,	91	,	79	],	'bn'	],
+		[	'construction-robot'	,[		117	,	106	,	89	],	'bo'	],
+		[	'logistic-chest-active-provider'	,[		113	,	81	,	115	],	'bp'	],
+		[	'logistic-chest-passive-provider'	,[		137	,	83	,	69	],	'bq'	],
+		[	'logistic-chest-storage'	,[		133	,	117	,	63	],	'br'	],
+		[	'logistic-chest-buffer'	,[		86	,	128	,	83	],	'bs'	],
+		[	'logistic-chest-requester'	,[		91	,	117	,	118	],	'bt'	],
+		[	'roboport'	,[		118	,	110	,	102	],	'bu'	],
+		[	'small-lamp'	,[		182	,	180	,	178	],	'bv'	],
+		[	'red-wire'	,[		172	,	72	,	51	],	'bw'	],
+		[	'green-wire'	,[		43	,	157	,	50	],	'bx'	],
+		[	'arithmetic-combinator'	,[		100	,	103	,	78	],	'by'	],
+		[	'decider-combinator'	,[		121	,	112	,	67	],	'bz'	],
+		[	'constant-combinator'	,[		123	,	72	,	69	],	'ca'	],
+		[	'power-switch'	,[		97	,	87	,	84	],	'cb'	],
+		[	'programmable-speaker'	,[		92	,	89	,	81	],	'cc'	],
+		[	'stone-brick'	,[		111	,	112	,	107	],	'cd'	],
+		[	'concrete'	,[		129	,	131	,	133	],	'ce'	],
+		[	'hazard-concrete'	,[		120	,	117	,	94	],	'cf'	],
+		[	'refined-concrete'	,[		128	,	130	,	130	],	'cg'	],
+		[	'refined-hazard-concrete'	,[		126	,	117	,	93	],	'ch'	],
+		[	'landfill'	,[		135	,	128	,	59	],	'cI'	],
+		[	'cliff-explosives'	,[		74	,	111	,	127	],	'cj'	],
+		[	'repair-pack'	,[		127	,	119	,	103	],	'ck'	],
+		[	'boiler'	,[		104	,	100	,	81	],	'cl'	],
+		[	'steam-engine'	,[		107	,	98	,	82	],	'cm'	],
+		[	'solar-panel'	,[		74	,	121	,	134	],	'cn'	],
+		[	'accumulator'	,[		116	,	144	,	144	],	'co'	],
+		[	'nuclear-reactor'	,[		110	,	123	,	89	],	'cp'	],
+		[	'heat-pipe'	,[		138	,	80	,	71	],	'cq'	],
+		[	'heat-exchanger'	,[		135	,	70	,	51	],	'cr'	],
+		[	'steam-turbine'	,[		92	,	92	,	87	],	'cs'	],
+		[	'burner-mining-drill'	,[		90	,	83	,	83	],	'ct'	],
+		[	'electric-mining-drill'	,[		90	,	89	,	79	],	'cu'	],
+		[	'offshore-pump'	,[		97	,	80	,	59	],	'cv'	],
+		[	'pumpjack'	,[		89	,	108	,	66	],	'cw'	],
+		[	'stone-furnace'	,[		105	,	93	,	63	],	'cx'	],
+		[	'steel-furnace'	,[		98	,	91	,	74	],	'cy'	],
+		[	'electric-furnace'	,[		89	,	89	,	85	],	'cz'	],
+		[	'assembling-machine-1'	,[		114	,	97	,	87	],	'da'	],
+		[	'assembling-machine-2'	,[		93	,	90	,	102	],	'db'	],
+		[	'assembling-machine-3'	,[		107	,	112	,	85	],	'dc'	],
+		[	'oil-refinery'	,[		118	,	89	,	57	],	'dd'	],
+		[	'chemical-plant'	,[		110	,	100	,	81	],	'de'	],
+		[	'centrifuge'	,[		125	,	144	,	113	],	'df'	],
+		[	'lab'	,[		98	,	123	,	157	],	'dg'	],
+		[	'beacon'	,[		94	,	86	,	79	],	'dh'	],
+		[	'speed-module'	,[		78	,	126	,	140	],	'dI'	],
+		[	'speed-module-2'	,[		78	,	134	,	149	],	'dj'	],
+		[	'speed-module-3'	,[		78	,	143	,	158	],	'dk'	],
+		[	'effectivity-module'	,[		95	,	134	,	73	],	'dl'	],
+		[	'effectivity-module-2'	,[		107	,	146	,	81	],	'dm'	],
+		[	'effectivity-module-3'	,[		118	,	159	,	83	],	'dn'	],
+		[	'productivity-module'	,[		150	,	100	,	65	],	'do'	],
+		[	'productivity-module-2'	,[		159	,	112	,	73	],	'dp'	],
+		[	'productivity-module-3'	,[		162	,	119	,	68	],	'dq'	],
+		[	'rocket-silo'	,[		108	,	99	,	81	],	'dr'	],
+		[	'satellite'	,[		112	,	116	,	119	],	'ds'	],
+		[	'wood'	,[		120	,	81	,	40	],	'dt'	],
+		[	'coal'	,[		49	,	45	,	41	],	'du'	],
+		[	'stone'	,[		116	,	100	,	71	],	'dv'	],
+		[	'iron-ore'	,[		87	,	108	,	118	],	'dw'	],
+		[	'copper-ore'	,[		146	,	89	,	61	],	'dx'	],
+		[	'uranium-ore'	,[		82	,	122	,	40	],	'dy'	],
+		[	'raw-fish'	,[		127	,	128	,	91	],	'dz'	],
+		[	'iron-plate'	,[		116	,	116	,	115	],	'ea'	],
+		[	'copper-plate'	,[		153	,	96	,	78	],	'eb'	],
+		[	'solid-fuel'	,[		79	,	79	,	79	],	'ec'	],
+		[	'steel-plate'	,[		111	,	112	,	107	],	'ed'	],
+		[	'plastic-bar'	,[		156	,	156	,	154	],	'ee'	],
+		[	'sulfur'	,[		150	,	139	,	40	],	'ef'	],
+		[	'battery'	,[		89	,	85	,	82	],	'eg'	],
+		[	'explosives'	,[		128	,	69	,	59	],	'eh'	],
+		[	'crude-oil-barrel'	,[		78	,	78	,	77	],	'eI'	],
+		[	'heavy-oil-barrel'	,[		108	,	83	,	67	],	'ej'	],
+		[	'light-oil-barrel'	,[		117	,	98	,	57	],	'ek'	],
+		[	'lubricant-barrel'	,[		79	,	99	,	69	],	'el'	],
+		[	'petroleum-gas-barrel'	,[		100	,	94	,	99	],	'em'	],
+		[	'sulfuric-acid-barrel'	,[		109	,	120	,	62	],	'en'	],
+		[	'water-barrel'	,[		87	,	97	,	103	],	'eo'	],
+		[	'copper-cable'	,[		151	,	99	,	79	],	'ep'	],
+		[	'iron-stick'	,[		104	,	103	,	101	],	'eq'	],
+		[	'iron-gear-wheel'	,[		93	,	94	,	89	],	'er'	],
+		[	'empty-barrel'	,[		110	,	110	,	108	],	'es'	],
+		[	'electronic-circuit'	,[		97	,	142	,	47	],	'et'	],
+		[	'advanced-circuit'	,[		180	,	71	,	46	],	'eu'	],
+		[	'processing-unit'	,[		87	,	108	,	151	],	'ev'	],
+		[	'engine-unit'	,[		101	,	90	,	68	],	'ew'	],
+		[	'electric-engine-unit'	,[		116	,	94	,	89	],	'ex'	],
+		[	'flying-robot-frame'	,[		80	,	87	,	86	],	'ey'	],
+		[	'rocket-control-unit'	,[		123	,	142	,	112	],	'ez'	],
+		[	'low-density-structure'	,[		114	,	101	,	79	],	'fa'	],
+		[	'rocket-fuel'	,[		92	,	84	,	65	],	'fb'	],
+		[	'rocket-part'	,[		100	,	102	,	97	],	'fc'	],
+		[	'nuclear-fuel'	,[		79	,	110	,	65	],	'fd'	],
+		[	'uranium-235'	,[		82	,	143	,	55	],	'fe'	],
+		[	'uranium-238'	,[		55	,	88	,	53	],	'ff'	],
+		[	'uranium-fuel-cell'	,[		76	,	132	,	70	],	'fg'	],
+		[	'used-up-uranium-fuel-cell'	,[		62	,	74	,	61	],	'fh'	],
+		[	'automation-science-pack'	,[		149	,	95	,	95	],	'fI'	],
+		[	'logistic-science-pack'	,[		102	,	150	,	102	],	'fj'	],
+		[	'military-science-pack'	,[		109	,	110	,	115	],	'fk'	],
+		[	'chemical-science-pack'	,[		97	,	139	,	149	],	'fl'	],
+		[	'production-science-pack'	,[		131	,	91	,	148	],	'fm'	],
+		[	'utility-science-pack'	,[		152	,	138	,	99	],	'fn'	],
+		[	'space-science-pack'	,[		155	,	154	,	153	],	'fo'	],
+		[	'pistol'	,[		85	,	80	,	73	],	'fp'	],
+		[	'submachine-gun'	,[		81	,	78	,	75	],	'fq'	],
+		[	'shotgun'	,[		99	,	84	,	75	],	'fr'	],
+		[	'combat-shotgun'	,[		113	,	89	,	77	],	'fs'	],
+		[	'rocket-launcher'	,[		90	,	89	,	80	],	'ft'	],
+		[	'flamethrower'	,[		80	,	74	,	69	],	'fu'	],
+		[	'land-mine'	,[		102	,	89	,	71	],	'fv'	],
+		[	'firearm-magazine'	,[		82	,	79	,	57	],	'fw'	],
+		[	'piercing-rounds-magazine'	,[		86	,	59	,	58	],	'fx'	],
+		[	'uranium-rounds-magazine'	,[		54	,	100	,	52	],	'fy'	],
+		[	'shotgun-shell'	,[		135	,	71	,	52	],	'fz'	],
+		[	'piercing-shotgun-shell'	,[		88	,	109	,	86	],	'ga'	],
+		[	'cannon-shell'	,[		94	,	85	,	71	],	'gb'	],
+		[	'explosive-cannon-shell'	,[		108	,	84	,	70	],	'gc'	],
+		[	'uranium-cannon-shell'	,[		88	,	93	,	67	],	'gd'	],
+		[	'explosive-uranium-cannon-shell'	,[		102	,	92	,	68	],	'ge'	],
+		[	'artillery-shell'	,[		119	,	98	,	78	],	'gf'	],
+		[	'rocket'	,[		104	,	100	,	85	],	'gg'	],
+		[	'explosive-rocket'	,[		107	,	92	,	89	],	'gh'	],
+		[	'atomic-bomb'	,[		92	,	109	,	85	],	'gI'	],
+		[	'flamethrower-ammo'	,[		117	,	100	,	95	],	'gj'	],
+		[	'grenade'	,[		84	,	91	,	73	],	'gk'	],
+		[	'cluster-grenade'	,[		102	,	71	,	60	],	'gl'	],
+		[	'poison-capsule'	,[		82	,	109	,	116	],	'gm'	],
+		[	'slowdown-capsule'	,[		118	,	102	,	79	],	'gn'	],
+		[	'defender-capsule'	,[		86	,	101	,	108	],	'go'	],
+		[	'distractor-capsule'	,[		93	,	88	,	48	],	'gp'	],
+		[	'destroyer-capsule'	,[		130	,	65	,	45	],	'gq'	],
+		[	'light-armor'	,[		87	,	76	,	58	],	'gr'	],
+		[	'heavy-armor'	,[		103	,	83	,	58	],	'gs'	],
+		[	'modular-armor'	,[		113	,	88	,	58	],	'gt'	],
+		[	'power-armor'	,[		98	,	67	,	36	],	'gu'	],
+		[	'power-armor-mk2'	,[		106	,	70	,	35	],	'gv'	],
+		[	'solar-panel-equipment'	,[		77	,	115	,	132	],	'gw'	],
+		[	'fusion-reactor-equipment'	,[		104	,	101	,	98	],	'gx'	],
+		[	'battery-equipment'	,[		114	,	109	,	94	],	'gy'	],
+		[	'battery-mk2-equipment'	,[		105	,	104	,	87	],	'gz'	],
+		[	'belt-immunity-equipment'	,[		90	,	97	,	97	],	'ha'	],
+		[	'exoskeleton-equipment'	,[		97	,	91	,	89	],	'hb'	],
+		[	'personal-roboport-equipment'	,[		107	,	100	,	82	],	'hc'	],
+		[	'personal-roboport-mk2-equipment'	,[		91	,	105	,	109	],	'hd'	],
+		[	'night-vision-equipment'	,[		83	,	93	,	74	],	'he'	],
+		[	'energy-shield-equipment'	,[		75	,	126	,	132	],	'hf'	],
+		[	'energy-shield-mk2-equipment'	,[		157	,	103	,	65	],	'hg'	],
+		[	'personal-laser-defense-equipment'	,[		97	,	80	,	51	],	'hh'	],
+		[	'discharge-defense-equipment'	,[		99	,	126	,	113	],	'hI'	],
+		[	'discharge-defense-remote'	,[		102	,	93	,	83	],	'hj'	],
+		[	'stone-wall'	,[		104	,	94	,	72	],	'hk'	],
+		[	'gate'	,[		101	,	91	,	51	],	'hl'	],
+		[	'gun-turret'	,[		119	,	90	,	49	],	'hm'	],
+		[	'laser-turret'	,[		116	,	97	,	48	],	'hn'	],
+		[	'flamethrower-turret'	,[		109	,	89	,	69	],	'ho'	],
+		[	'artillery-turret'	,[		100	,	94	,	78	],	'hp'	],
+		[	'artillery-targeting-remote'	,[		150	,	93	,	78	],	'hq'	],
+		[	'radar'	,[		122	,	115	,	93	],	'hr'	]
+	]*/
+	
+	start  = readBytesToInt(b1,20,4)*2
+	width  = readBytesToInt(b1,36,4)
+	height = readBytesToInt(b1,44,4)
+	rowLength = Math.ceil(24*width/32)*4*2
+
+	var pixels = [];
+	pixels[0] = blankpixelmap(0,width,height);	//rgb array of input image
+	pixels[1] = blankpixelmap("",width,height);	//array of item codes for output string
+	pixels[2] = blankpixelmap(0,width,height);	//dithering debt
+	for(dd=0;dd<height;dd++){
+	for(dc=0;dc<width;dc++){
+		pixels[0][dc][dd] = [	readBytesToInt(b1,start+dd*rowLength+dc*6+4,1)*159/256+25, //on void
+								readBytesToInt(b1,start+dd*rowLength+dc*6+2,1)*159/256+20, 
+								readBytesToInt(b1,start+dd*rowLength+dc*6+0,1)*163/256+15]
+		//pixels[0][dc][dd] = [	readBytesToInt(b1,start+dd*rowLength+dc*6+4,1)*139/256+43, //on refined concrete
+		//						readBytesToInt(b1,start+dd*rowLength+dc*6+2,1)*135/256+45, 
+		//						readBytesToInt(b1,start+dd*rowLength+dc*6+0,1)*143/256+35]
+		pixels[2][dc][dd] = [0,0,0]
+	}}
+
 	for(dd=0;dd<height;dd++){
 	for(dc=0;dc<width;dc++){
 		best_distance = 1000000
 		for(de=0;de<pallette.length;de++){
-			this_distance = Math.pow(0.299*(pixels[0][dc][dd][0]-pallette[de][1][0]),2)
-						  + Math.pow(0.587*(pixels[0][dc][dd][1]-pallette[de][1][1]),2)
-						  + Math.pow(0.114*(pixels[0][dc][dd][2]-pallette[de][1][2]),2)
+			this_distance = Math.pow(0.299*(pixels[0][dc][dd][0]+pixels[2][dc][dd][0]-pallette[de][1][0]),2)
+						  + Math.pow(0.587*(pixels[0][dc][dd][1]+pixels[2][dc][dd][1]-pallette[de][1][1]),2)
+						  + Math.pow(0.114*(pixels[0][dc][dd][2]+pixels[2][dc][dd][2]-pallette[de][1][2]),2)
 			if(this_distance<best_distance){
 				best_distance = this_distance
 				best = de
 			}
 		}
 		pixels[1][dc][dd] = pallette[best][2]
+		hackyDistanceFactorLimit = 32*32*3
 		if(dc<width-1){	
-				pixels[0][dc+1][dd][0]+=   7/16*(pixels[0][dc][dd][0]-pallette[best][1][0])
-				pixels[0][dc+1][dd][1]+=   7/16*(pixels[0][dc][dd][1]-pallette[best][1][1])
-				pixels[0][dc+1][dd][2]+=   7/16*(pixels[0][dc][dd][2]-pallette[best][1][2])
+				hackyDistanceFactor = //to stop debt carrying into pixels of a totally different colour
+					Math.max(0,1-(
+						  Math.pow(pixels[0][dc+1][dd][0]-pixels[0][dc][dd][0],2)	
+						+ Math.pow(pixels[0][dc+1][dd][1]-pixels[0][dc][dd][1],2)	
+						+ Math.pow(pixels[0][dc+1][dd][2]-pixels[0][dc][dd][2],2) 
+						)/hackyDistanceFactorLimit)
+				pixels[2][dc+1][dd][0]+=   hackyDistanceFactor*7/16*(pixels[0][dc][dd][0]+pixels[2][dc][dd][0]-pallette[best][1][0])
+				pixels[2][dc+1][dd][1]+=   hackyDistanceFactor*7/16*(pixels[0][dc][dd][1]+pixels[2][dc][dd][1]-pallette[best][1][1])
+				pixels[2][dc+1][dd][2]+=   hackyDistanceFactor*7/16*(pixels[0][dc][dd][2]+pixels[2][dc][dd][2]-pallette[best][1][2])
 		}
 		if(dd<height-1){	
-			if(dc>0){		
-				pixels[0][dc-1][dd+1][0]+= 3/16*(pixels[0][dc][dd][0]-pallette[best][1][0])
-				pixels[0][dc-1][dd+1][1]+= 3/16*(pixels[0][dc][dd][1]-pallette[best][1][1])
-				pixels[0][dc-1][dd+1][2]+= 3/16*(pixels[0][dc][dd][2]-pallette[best][1][2])
+			if(dc>0){	
+				hackyDistanceFactor = 
+					Math.max(0,1-(
+						  Math.pow(pixels[0][dc-1][dd+1][0]-pixels[0][dc][dd][0],2)	
+						+ Math.pow(pixels[0][dc-1][dd+1][1]-pixels[0][dc][dd][1],2)	
+						+ Math.pow(pixels[0][dc-1][dd+1][2]-pixels[0][dc][dd][2],2) 
+						)/hackyDistanceFactorLimit)
+				pixels[2][dc-1][dd+1][0]+= hackyDistanceFactor*3/16*(pixels[0][dc][dd][0]+pixels[2][dc][dd][0]-pallette[best][1][0])
+				pixels[2][dc-1][dd+1][1]+= hackyDistanceFactor*3/16*(pixels[0][dc][dd][1]+pixels[2][dc][dd][1]-pallette[best][1][1])
+				pixels[2][dc-1][dd+1][2]+= hackyDistanceFactor*3/16*(pixels[0][dc][dd][2]+pixels[2][dc][dd][2]-pallette[best][1][2])
 			}
-				pixels[0][dc][dd+1][0]+=   5/16*(pixels[0][dc][dd][0]-pallette[best][1][0])
-				pixels[0][dc][dd+1][1]+=   5/16*(pixels[0][dc][dd][1]-pallette[best][1][1])
-				pixels[0][dc][dd+1][2]+=   5/16*(pixels[0][dc][dd][2]-pallette[best][1][2])
+				hackyDistanceFactor = 
+					Math.max(0,1-(
+						  Math.pow(pixels[0][dc][dd+1][0]-pixels[0][dc][dd][0],2)	
+						+ Math.pow(pixels[0][dc][dd+1][1]-pixels[0][dc][dd][1],2)	
+						+ Math.pow(pixels[0][dc][dd+1][2]-pixels[0][dc][dd][2],2) 
+						)/hackyDistanceFactorLimit)
+				pixels[2][dc][dd+1][0]+=   hackyDistanceFactor*5/16*(pixels[0][dc][dd][0]+pixels[2][dc][dd][0]-pallette[best][1][0])
+				pixels[2][dc][dd+1][1]+=   hackyDistanceFactor*5/16*(pixels[0][dc][dd][1]+pixels[2][dc][dd][1]-pallette[best][1][1])
+				pixels[2][dc][dd+1][2]+=   hackyDistanceFactor*5/16*(pixels[0][dc][dd][2]+pixels[2][dc][dd][2]-pallette[best][1][2])
 			if(dc<width-1){	
-				pixels[0][dc+1][dd+1][0]+= 1/16*(pixels[0][dc][dd][0]-pallette[best][1][0])
-				pixels[0][dc+1][dd+1][1]+= 1/16*(pixels[0][dc][dd][1]-pallette[best][1][1])
-				pixels[0][dc+1][dd+1][2]+= 1/16*(pixels[0][dc][dd][2]-pallette[best][1][2])
+				hackyDistanceFactor = 
+					Math.max(0,1-(
+						  Math.pow(pixels[0][dc+1][dd+1][0]-pixels[0][dc][dd][0],2)	
+						+ Math.pow(pixels[0][dc+1][dd+1][1]-pixels[0][dc][dd][1],2)	
+						+ Math.pow(pixels[0][dc+1][dd+1][2]-pixels[0][dc][dd][2],2) 
+						)/hackyDistanceFactorLimit)
+				pixels[2][dc+1][dd+1][0]+= hackyDistanceFactor*1/16*(pixels[0][dc][dd][0]+pixels[2][dc][dd][0]-pallette[best][1][0])
+				pixels[2][dc+1][dd+1][1]+= hackyDistanceFactor*1/16*(pixels[0][dc][dd][1]+pixels[2][dc][dd][1]-pallette[best][1][1])
+				pixels[2][dc+1][dd+1][2]+= hackyDistanceFactor*1/16*(pixels[0][dc][dd][2]+pixels[2][dc][dd][2]-pallette[best][1][2])
 			}
 		}
 	}}
