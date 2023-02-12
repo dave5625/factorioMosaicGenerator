@@ -52,14 +52,24 @@
   <form class="my-form">
     <p>To generate an input string for mosaic generator factorio mod.</p>
     <p>Drop a 24-bit bitmap file onto the dashed region.</p>
-    <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
+    <input type="file" id="inputButton">
+	
   </form>
 </div>
 
 <div id = "output"></div>
 
-<script type="text/javascript" src="pako.js"></script>
 <script>
+
+
+
+const fileInput = document.getElementById('inputButton');
+fileInput.onchange = () => {
+  const selectedFile = fileInput.files[0];
+  readImage(selectedFile)
+}
+  
+
 
 let dropArea = document.getElementById('drop-area')
 
@@ -113,8 +123,8 @@ function dropHandler(ev) {
 
 function readImage(file) {
   // Check if the file is an image.
-  if (file.type && !file.type.startsWith('image/')) {
-    document.getElementById("output").innerHTML = "<div id = 'scrollbox'>File is not an image?</div>"
+  if (file.type && !file.type.startsWith('image/bmp')) {
+    document.getElementById("output").innerHTML = "<div id = 'scrollbox'>File is not a bitmap?</div>"
     return;
   }
 
